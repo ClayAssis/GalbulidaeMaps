@@ -29,9 +29,10 @@ app.layout = html.Div(
             style={
                 "flex": "0 0 auto",
                 "width": f"{dropdown_width}px",
+                "color": "#444654",
             },  # Set width to the calculated value
             children=[
-                html.H3("Epiteto List"),
+                html.H3("Species List"),
                 dcc.Dropdown(
                     id="dropdown_classes",
                     options=[
@@ -54,10 +55,15 @@ app.layout = html.Div(
             style={
                 "flex": "1",
                 "overflow": "hidden",
+                "color": "#444654",
             },  # Expand the column to occupy the remaining width
             children=[
                 dcc.Graph(
-                    id="mapa", style={"height": "100%"}
+                    id="mapa",
+                    style={
+                        "height": "100%",
+                        "color": "#444654",
+                    },
                 ),  # Set height to 100% of the element
             ],
         ),
@@ -89,14 +95,18 @@ def update_map(selected_class, map_type):
             "Estado/Departamento",
             "Localidade",
         ],
-        zoom=3,
+        zoom=3.8,
     )
 
     # Set the map style based on the selected option
     fig.update_layout(
         mapbox_style=map_type,
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
-        mapbox=dict(center=dict(lat=-12, lon=-53.58), pitch=0, bearing=0),
+        mapbox=dict(
+            center=dict(lat=-12, lon=-53.58),
+            pitch=0,
+            bearing=0,
+        ),
     )
 
     return fig
@@ -104,4 +114,4 @@ def update_map(selected_class, map_type):
 
 # Run the application
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(host="0.0.0.0", port=8050, debug=True)
