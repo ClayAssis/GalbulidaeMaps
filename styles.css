@@ -1,0 +1,6 @@
+/* styles.css */
+/* Custom style for the dropdown search bar */
+.Select-input input {
+    background-color: #444654 !important;
+    color: white !important;
+}
