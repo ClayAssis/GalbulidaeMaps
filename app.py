@@ -1,6 +1,6 @@
 import pandas as pd
 import dash
-from dash import dcc, html, Input, Output, State
+from dash import dcc, html, Input, Output
 import plotly.express as px
 
 # Load the data from Excel using pandas
@@ -23,24 +23,32 @@ app.layout = html.Div(
     style={
         "display": "flex",
         "height": "100vh",
-    },  # Set height to 100% of the page using flexbox for column layout
+        "background-color": "#444654",  # Set the background color here
+        "font-family": "Gill Sans MT",
+    },
     children=[
         html.Div(
             style={
                 "flex": "0 0 auto",
                 "width": f"{dropdown_width}px",
-                "color": "#444654",
-            },  # Set width to the calculated value
+                "color": "#ffffff",
+                "font-size": "12px",
+                "padding": "10px",
+            },
             children=[
-                html.H3("Species List"),
+                html.H3("Species List", style={"padding-top": "5px"}),
                 dcc.Dropdown(
                     id="dropdown_classes",
                     options=[
                         {"label": classe, "value": classe} for classe in classes_epiteto
                     ],
                     value=classes_epiteto[0],  # Initial value for the dropdown
+                    style={
+                        "font-family": "Gill Sans MT",
+                        "color": "#444654",
+                    },  # Set font-family for the dropdown
                 ),
-                html.H3("Map Type"),
+                html.H3("Map Type", style={"padding-top": "15px"}),
                 dcc.Dropdown(
                     id="dropdown_map_type",
                     options=[
@@ -48,6 +56,10 @@ app.layout = html.Div(
                         {"label": "Relief Map", "value": "stamen-terrain"},
                     ],
                     value="open-street-map",  # Initial value for the dropdown
+                    style={
+                        "font-family": "Gill Sans MT",
+                        "color": "#444654",
+                    },  # Set font-family for the dropdown
                 ),
             ],
         ),
@@ -55,14 +67,15 @@ app.layout = html.Div(
             style={
                 "flex": "1",
                 "overflow": "hidden",
-                "color": "#444654",
-            },  # Expand the column to occupy the remaining width
+                "color": "#ffffff",  # Set the text color for the map
+                "padding": "10px",
+            },
             children=[
                 dcc.Graph(
                     id="mapa",
                     style={
                         "height": "100%",
-                        "color": "#444654",
+                        "font-size": "12px",
                     },
                 ),  # Set height to 100% of the element
             ],
@@ -97,6 +110,10 @@ def update_map(selected_class, map_type):
         ],
         zoom=3.8,
     )
+    # Set the size of the points
+    fig.update_traces(
+        marker=dict(size=10, color="red")
+    )  # You can adjust the size value as needed
 
     # Set the map style based on the selected option
     fig.update_layout(
