@@ -6,16 +6,19 @@ import plotly.express as px
 # Load the data from Excel using pandas
 df = pd.read_excel("Galbulidae.xlsx")
 
-# Get the list of classes in the "epiteto" column
-classes_epiteto = df["epiteto"].unique()
+# Filter out NaN values and convert float values to strings in the "Species" column
+df["Species"] = df["Species"].apply(lambda x: str(x) if pd.notnull(x) else "")
+
+# Get the list of classes in the "Species" column
+classes_species = df["Species"].unique()
 
 # Create the Dash application
 app = dash.Dash(__name__, external_stylesheets=["styles.css"])
 
-# Calculate the width of the dropdown based on the maximum length of the epiteto names
-max_epiteto_length = max([len(epiteto) for epiteto in classes_epiteto])
+# Calculate the width of the dropdown based on the maximum length of the species names
+max_species_length = max([len(species) for species in classes_species])
 dropdown_width = (
-    12 * max_epiteto_length
+    12 * max_species_length
 )  # Approximate width in pixels based on character length
 
 # Application layout
@@ -40,9 +43,10 @@ app.layout = html.Div(
                 dcc.Dropdown(
                     id="dropdown_classes",
                     options=[
-                        {"label": classe, "value": classe} for classe in classes_epiteto
+                        {"label": species, "value": species}
+                        for species in classes_species
                     ],
-                    value=classes_epiteto[0],  # Initial value for the dropdown
+                    value=classes_species[0],  # Initial value for the dropdown
                     style={
                         "font-family": "Gill Sans MT",
                         "color": "#444654",
@@ -91,22 +95,36 @@ app.layout = html.Div(
 )
 def update_map(selected_class, map_type):
     # Filter the dataframe to show only the points of the selected class
-    filtered_df = df[df["epiteto"] == selected_class]
+    filtered_df = df[df["Species"] == selected_class]
 
     # Use Plotly library to create the interactive map
     fig = px.scatter_mapbox(
         filtered_df,
         lat="Latitude",
         lon="Longitude",
-        hover_name="Sigla coleção",
+        hover_name="Museu",
         hover_data=[
-            "Número de Tombo",
-            "Sexo",
-            "Gênero",
-            "epiteto",
-            "País",
-            "Estado/Departamento",
-            "Localidade",
+            "Museu",
+            "REGISTRO",
+            "Sex",
+            "Species",
+            "COUNTRY",
+            "MAJORAREA",
+            "XLOCAL",
+            "Longitude",
+            "Latitude",
+            "Bill length (mm)",
+            "Bill height (mm)",
+            "Bill width (mm)",
+            "Wing length (mm)",
+            "Tail length (mm)",
+            "BillRES1",
+            "BillRES2",
+            "BillRES3",
+            "WingRES4",
+            "TailRES5",
+            "Black spot of the bill (mm)",
+            "BlacRES1",
         ],
         zoom=3.8,
     )
@@ -120,7 +138,7 @@ def update_map(selected_class, map_type):
         mapbox_style=map_type,
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
         mapbox=dict(
-            center=dict(lat=-12, lon=-53.58),
+            center=dict(lat=-8, lon=-60),
             pitch=0,
             bearing=0,
         ),
